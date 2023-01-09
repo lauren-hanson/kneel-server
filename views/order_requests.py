@@ -25,3 +25,20 @@ def get_single_order(id):
             requested_order = order
 
     return requested_order
+
+
+def create_order(order):
+    # Get the id value of the last order in the list
+    max_id = ORDERS[-1]["id"]
+
+    # Add 1 to whatever that number is
+    new_id = max_id + 1
+
+    # Add an `id` property to the order dictionary
+    order["id"] = new_id
+
+    # Add the order dictionary to the list
+    ORDERS.append(order)
+
+    # Return the dictionary with `id` property added
+    return order

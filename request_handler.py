@@ -1,6 +1,6 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_metals, get_single_metal, get_all_orders, get_single_order, get_all_sizes, get_single_size, get_all_styles, get_single_style
+from views import get_all_metals, get_single_metal, get_all_orders, get_single_order, create_order, get_all_sizes, get_single_size, get_all_styles, get_single_style
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -89,14 +89,42 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         self.wfile.write(json.dumps(response).encode())
 
-    def do_POST(self):
-        """Handles POST requests to the server """
-        self._set_headers(201)
+    # def do_POST(self):
+    #     """Handles POST requests to the server """
+    #     self._set_headers(201)
 
+    #     content_len = int(self.headers.get('content-length', 0))
+    #     post_body = self.rfile.read(content_len)
+    #     response = {"payload": post_body}
+    #     self.wfile.write(json.dumps(response).encode())
+
+    def do_POST(self):
+        self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
-        response = {"payload": post_body}
-        self.wfile.write(json.dumps(response).encode())
+
+        # Convert JSON string to a Python dictionary
+        post_body = json.loads(post_body)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Initialize new response
+        new_order = None
+        # new_location = None
+        # new_employee = None
+
+        # Add a new animal to the list. Don't worry about
+        # the orange squiggle, you'll define the create_animal
+        # function next.
+        if resource == "orders":
+            new_order = create_order(post_body)
+
+        # # Add a new location to the list. Don't worry about
+        # # the orange squiggle, you'll define the create_location
+        # # function next.
+        # Encode the new animal and send in order
+        self.wfile.write(json.dumps(new_order).encode())
 
     def do_PUT(self):
         """Handles PUT requests to the server """
