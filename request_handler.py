@@ -1,6 +1,6 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_metals, get_single_metal, get_all_orders, get_single_order, create_order, get_all_sizes, get_single_size, get_all_styles, get_single_style
+from views import get_all_metals, get_single_metal, get_all_orders, get_single_order, create_order, delete_order, get_all_sizes, get_single_size, get_all_styles, get_single_style
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -114,17 +114,28 @@ class HandleRequests(BaseHTTPRequestHandler):
         # new_location = None
         # new_employee = None
 
-        # Add a new animal to the list. Don't worry about
-        # the orange squiggle, you'll define the create_animal
+        # Add a new order to the list. Don't worry about
+        # the orange squiggle, you'll define the create_order
         # function next.
         if resource == "orders":
             new_order = create_order(post_body)
 
-        # # Add a new location to the list. Don't worry about
-        # # the orange squiggle, you'll define the create_location
-        # # function next.
-        # Encode the new animal and send in order
+        # Encode the new order and send in order
         self.wfile.write(json.dumps(new_order).encode())
+
+    def do_DELETE(self):
+        # Set a 204 response code
+        self._set_headers(204)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Delete a single order from the list
+        if resource == "orders":
+            delete_order(id)
+
+        # Encode the new order and send in response
+        self.wfile.write("".encode())
 
     def do_PUT(self):
         """Handles PUT requests to the server """

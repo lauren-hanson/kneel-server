@@ -12,6 +12,8 @@ def get_all_orders():
     return ORDERS
 
 # Function with a single parameter
+
+
 def get_single_order(id):
     # Variable to hold the found order, if it exists
     requested_order = None
@@ -42,3 +44,19 @@ def create_order(order):
 
     # Return the dictionary with `id` property added
     return order
+
+
+def delete_order(id):
+    # Initial -1 value for order index, in case one isn't found
+    order_index = -1
+
+    # Iterate the ORDERS list, but use enumerate() so that you
+    # can access the index value of each item
+    for index, order in enumerate(ORDERS):
+        if order["id"] == id:
+            # Found the order. Store the current index.
+            order_index = index
+
+    # If the order was found, use pop(int) to remove it from list
+    if order_index >= 0:
+        ORDERS.pop(order_index)
