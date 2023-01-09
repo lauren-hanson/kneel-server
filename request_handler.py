@@ -1,6 +1,6 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_metals, get_single_metal, get_all_orders, get_single_order, create_order, delete_order, get_all_sizes, get_single_size, get_all_styles, get_single_style
+from views import get_all_metals, get_single_metal, get_all_orders, get_single_order, create_order, delete_order, update_order, get_all_sizes, get_single_size, get_all_styles, get_single_style
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -140,6 +140,22 @@ class HandleRequests(BaseHTTPRequestHandler):
     def do_PUT(self):
         """Handles PUT requests to the server """
         self.do_POST()
+
+    def do_PUT(self):
+        self._set_headers(204)
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+        post_body = json.loads(post_body)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Delete a single animal from the list
+        if resource == "orders":
+            update_order(id, post_body)
+
+    # Encode the new animal and send in response
+        self.wfile.write("".encode())
 
     def _set_headers(self, status):
         """Sets the status code, Content-Type and Access-Control-Allow-Origin
