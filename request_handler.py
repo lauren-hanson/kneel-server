@@ -1,31 +1,73 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_metals, get_all_sizes, get_all_orders, get_all_styles
+from views import get_all_metals, get_single_metal
+# , get_all_sizes, get_all_orders, get_all_styles
 
 
 class HandleRequests(BaseHTTPRequestHandler):
     """Controls the functionality of any GET, PUT, POST, DELETE requests to the server
     """
 
+    def parse_url(self, path):
+        # Just like splitting a string in JavaScript. If the
+        # path is "/animals/1", the resulting list will
+        # have "" at index 0, "animals" at index 1, and "1"
+        # at index 2.
+        path_params = path.split("/")
+        resource = path_params[1]
+        id = None
+
+        # Try to get the item at index 2
+        try:
+            # Convert the string "1" to the integer 1
+            # This is the new parseInt()
+            id = int(path_params[2])
+        except IndexError:
+            pass  # No route parameter exists: /animals
+        except ValueError:
+            pass  # Request had trailing slash: /animals/
+
+        return (resource, id)  # This is a tuple
+
+    # function will return entire list
+    # def do_GET(self):
+    #     """Handles GET requests to the server """
+    #     self._set_headers(200)
+
+    #     if self.path == "/metals":
+    #         response = get_all_metals()
+
+    #     # elif self.path == "/sizes":
+    #     #     response = get_all_sizes()
+
+    #     # elif self.path == "/orders":
+    #     #     response = get_all_orders()
+
+    #     # elif self.path == "/styles":
+    #     #     response = get_all_styles()
+
+    #     else:
+    #         response = []
+
+    #     self.wfile.write(json.dumps(response).encode())
+
+
     def do_GET(self):
         """Handles GET requests to the server """
         self._set_headers(200)
 
-        if self.path == "/metals":
-            response = get_all_metals()
+        response = {}  # Default response
 
-        elif self.path == "/sizes":
-            response = get_all_sizes()
+        # Parse the URL and capture the tuple that is returned
+        (resource, id) = self.parse_url(self.path)
 
-        elif self.path == "/orders":
-            response = get_all_orders()
+        if resource == "metals":
+            if id is not None:
+                response = get_single_metal(id)
 
-        elif self.path == "/styles": 
-            response = get_all_styles()
-
-        else:
-            response = []
-
+            else:
+                response = get_all_metals()
+        
         self.wfile.write(json.dumps(response).encode())
 
     def do_POST(self):
