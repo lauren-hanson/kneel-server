@@ -1,7 +1,6 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_metals, get_single_metal
-# , get_all_sizes, get_all_orders, get_all_styles
+from views import get_all_metals, get_single_metal, get_all_orders, get_single_order, get_all_sizes, get_single_size, get_all_styles, get_single_style
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -51,7 +50,6 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     #     self.wfile.write(json.dumps(response).encode())
 
-
     def do_GET(self):
         """Handles GET requests to the server """
         self._set_headers(200)
@@ -67,7 +65,28 @@ class HandleRequests(BaseHTTPRequestHandler):
 
             else:
                 response = get_all_metals()
-        
+
+        if resource == "orders":
+            if id is not None:
+                response = get_single_order(id)
+
+            else:
+                response = get_all_orders()
+
+        if resource == "sizes":
+            if id is not None:
+                response = get_single_size(id)
+
+            else:
+                response = get_all_sizes()
+
+        if resource == "styles":
+            if id is not None:
+                response = get_single_style(id)
+
+            else:
+                response = get_all_styles()
+
         self.wfile.write(json.dumps(response).encode())
 
     def do_POST(self):
