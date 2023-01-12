@@ -144,14 +144,13 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps(new_order).encode())
 
     def do_DELETE(self):
-        # Set a 204 response code
-        self._set_headers(204)
-
         # Parse the URL
         (resource, id) = self.parse_url(self.path)
 
         # Delete a single order from the list
         if resource == "orders":
+            # Set a 204 response code
+            self._set_headers(204)
             delete_order(id)
 
         # Encode the new order and send in response
