@@ -15,7 +15,6 @@ class HandleRequests(BaseHTTPRequestHandler):
         path_params = path.split("/")
         resource = path_params[1]
         id = None
-
         # Try to get the item at index 2
         try:
             # Convert the string "1" to the integer 1
@@ -25,9 +24,7 @@ class HandleRequests(BaseHTTPRequestHandler):
             pass  # No route parameter exists: /animals
         except ValueError:
             pass  # Request had trailing slash: /animals/
-
         return (resource, id)  # This is a tuple
-
     # function will return entire list
     # def do_GET(self):
     #     """Handles GET requests to the server """
@@ -52,8 +49,6 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     def do_GET(self):
         """Handles GET requests to the server """
-        self._set_headers(200)
-
         response = {}  # Default response
 
         # Parse the URL and capture the tuple that is returned
@@ -62,29 +57,54 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "metals":
             if id is not None:
                 response = get_single_metal(id)
+                # self._set_headers(200)
+
+                if response is None:
+                    self._set_headers(404)
+                    response = "This metal is not in stock"
+                else:
+                    self._set_headers(200)
 
             else:
+                self._set_headers(200)
                 response = get_all_metals()
 
         if resource == "orders":
             if id is not None:
+                self._set_headers(200)
                 response = get_single_order(id)
 
             else:
+                self._set_headers(200)
                 response = get_all_orders()
 
         if resource == "sizes":
             if id is not None:
+                # self._set_headers(200)
                 response = get_single_size(id)
 
+                if response is None:
+                    self._set_headers(404)
+                    response = "This size is not in stock"
+                else:
+                    self._set_headers(200)
+
             else:
+                self._set_headers(200)
                 response = get_all_sizes()
 
         if resource == "styles":
             if id is not None:
+                # self._set_headers(200)
                 response = get_single_style(id)
+                if response is None:
+                    self._set_headers(404)
+                    response = "This style is not in stock"
+                else:
+                    self._set_headers(200)
 
             else:
+                self._set_headers(200)
                 response = get_all_styles()
 
         self.wfile.write(json.dumps(response).encode())
