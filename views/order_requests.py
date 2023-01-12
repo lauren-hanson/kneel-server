@@ -1,3 +1,7 @@
+from .size_requests import get_single_size
+from .metal_requests import get_single_metal
+from .style_requests import get_single_style
+
 ORDERS = [
     {
         "id": 1,
@@ -7,12 +11,10 @@ ORDERS = [
     }
 ]
 
-
 def get_all_orders():
     return ORDERS
 
 # Function with a single parameter
-
 
 def get_single_order(id):
     # Variable to hold the found order, if it exists
@@ -25,6 +27,18 @@ def get_single_order(id):
         # instead of the dot notation that JavaScript used.
         if order["id"] == id:
             requested_order = order
+
+            metal_choice = get_single_metal(requested_order['metalId'])
+            requested_order['metal'] = metal_choice
+            requested_order.pop('metalId')
+
+            style_choice = get_single_style(requested_order['styleId'])
+            requested_order['style'] = style_choice
+            requested_order.pop('styleId')
+
+            size_choice = get_single_size(requested_order['sizeId'])
+            requested_order['size'] = size_choice
+            requested_order.pop('sizeId')
 
     return requested_order
 
