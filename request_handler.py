@@ -156,6 +156,18 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Encode the new order and send in response
         self.wfile.write("".encode())
 
+        # if resource == "orders":
+        #     if "isPaid" in resource and "isStarted" in resource:
+        #         self._set_headers(405)
+        #         response = "This order has already been started."
+        #     else:
+        #             # Set a 204 response code
+        #         self._set_headers(204)
+        #         delete_order(id)
+
+        # # Encode the new order and send in response
+        # self.wfile.write(json.dumps(response).encode())
+
     def do_PUT(self):
         """Handles PUT requests to the server """
         self.do_POST()
