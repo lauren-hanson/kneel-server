@@ -1,3 +1,5 @@
+import sqlite3
+import json
 from .size_requests import get_single_size
 from .metal_requests import get_single_metal
 from .style_requests import get_single_style
@@ -59,20 +61,28 @@ def create_order(order):
     # Return the dictionary with `id` property added
     return order
 
-def delete_order(id):
-    # Initial -1 value for order index, in case one isn't found
-    order_index = -1
 
-    # Iterate the ORDERS list, but use enumerate() so that you
-    # can access the index value of each item
-    for index, order in enumerate(ORDERS):
-        if order["id"] == id:
-            # Found the order. Store the current index.
-            order_index = index
+def delete_animal(id):
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        db_cursor = conn.cursor()
+        db_cursor.execute("""
+        DELETE FROM orders
+        WHERE id = ?
+        """, (id, ))
+# def delete_order(id):
+#     # Initial -1 value for order index, in case one isn't found
+#     order_index = -1
 
-    # If the order was found, use pop(int) to remove it from list
-    if order_index >= 0:
-        ORDERS.pop(order_index)
+#     # Iterate the ORDERS list, but use enumerate() so that you
+#     # can access the index value of each item
+#     for index, order in enumerate(ORDERS):
+#         if order["id"] == id:
+#             # Found the order. Store the current index.
+#             order_index = index
+
+#     # If the order was found, use pop(int) to remove it from list
+#     if order_index >= 0:
+#         ORDERS.pop(order_index)
 
 def update_order(id, new_order):
     # Iterate the ORDERS list, but use enumerate() so that
