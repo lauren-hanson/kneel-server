@@ -63,17 +63,32 @@ def get_single_order(id):
         return order.__dict__
 
 
-def create_order(order):
-    # Get the id value of the last order in the list
-    max_id = ORDERS[-1]["id"]
-    # Add 1 to whatever that number is
-    new_id = max_id + 1
-    # Add an `id` property to the order dictionary
-    order["id"] = new_id
-    # Add the order dictionary to the list
-    ORDERS.append(order)
-    # Return the dictionary with `id` property added
-    return order
+def create_order(new_order):
+    with sqlite3.connect("./kneeldiamonds.sqlite3") as conn:
+        db_cursor = conn.cursor()
+        db_cursor.execute("""
+        INSERT INTO Orders
+            (metal_id, size_id, style_id)
+        VALUES
+            (?, ?, ?); 
+        """, (new_order['metal_id'], new_order['size_id'], new_order['style_id']))
+
+        id = db_cursor.lastrowid
+        new_order['id'] = id 
+    return new_order
+
+
+# def create_order(order):
+#     # Get the id value of the last order in the list
+#     max_id = ORDERS[-1]["id"]
+#     # Add 1 to whatever that number is
+#     new_id = max_id + 1
+#     # Add an `id` property to the order dictionary
+#     order["id"] = new_id
+#     # Add the order dictionary to the list
+#     ORDERS.append(order)
+#     # Return the dictionary with `id` property added
+#     return order
 
 
 def delete_order(id):

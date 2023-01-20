@@ -7,47 +7,17 @@ class HandleRequests(BaseHTTPRequestHandler):
     """Controls the functionality of any GET, PUT, POST, DELETE requests to the server
     """
     def parse_url(self, path):
-        # Just like splitting a string in JavaScript. If the
-        # path is "/animals/1", the resulting list will
-        # have "" at index 0, "animals" at index 1, and "1"
-        # at index 2.
         path_params = path.split("/")
         resource = path_params[1]
         id = None
-        # Try to get the item at index 2
         try:
-            # Convert the string "1" to the integer 1
-            # This is the new parseInt()
             id = int(path_params[2])
         except IndexError:
             pass  # No route parameter exists: /animals
         except ValueError:
-            pass  # Request had trailing slash: /animals/
-        return (resource, id)  # This is a tuple
-
-    # function will return entire list
-    # def do_GET(self):
-    #     """Handles GET requests to the server """
-    #     self._set_headers(200)
-
-    #     if self.path == "/metals":
-    #         response = get_all_metals()
-
-    #     # elif self.path == "/sizes":
-    #     #     response = get_all_sizes()
-
-    #     # elif self.path == "/orders":
-    #     #     response = get_all_orders()
-
-    #     # elif self.path == "/styles":
-    #     #     response = get_all_styles()
-
-    #     else:
-    #         response = []
-
-    #     self.wfile.write(json.dumps(response).encode())
-
-    
+            pass  
+        return (resource, id)  
+  
     def do_GET(self):
         """Handles GET requests to the server """
         response = {}  # Default response
@@ -98,15 +68,6 @@ class HandleRequests(BaseHTTPRequestHandler):
                 response = get_all_styles()
         self.wfile.write(json.dumps(response).encode())
 
-    # def do_POST(self):
-    #     """Handles POST requests to the server """
-    #     self._set_headers(201)
-
-    #     content_len = int(self.headers.get('content-length', 0))
-    #     post_body = self.rfile.read(content_len)
-    #     response = {"payload": post_body}
-    #     self.wfile.write(json.dumps(response).encode())
-
     def do_POST(self):
         self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
@@ -138,18 +99,6 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         # Encode the new order and send in response
         self.wfile.write("".encode())
-
-        # if resource == "orders":
-        #     if "isPaid" in resource and "isStarted" in resource:
-        #         self._set_headers(405)
-        #         response = "This order has already been started."
-        #     else:
-        #             # Set a 204 response code
-        #         self._set_headers(204)
-        #         delete_order(id)
-
-        # # Encode the new order and send in response
-        # self.wfile.write(json.dumps(response).encode())
 
     def do_PUT(self):
         """Handles PUT requests to the server """
