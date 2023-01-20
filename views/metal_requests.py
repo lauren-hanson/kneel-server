@@ -49,23 +49,33 @@ def get_all_metals():
 
         for row in dataset:
             metal = Metal(row['id'], row['metal'],
-                           row['price'])
+                          row['price'])
 
             metals.append(metal.__dict__)
     return metals
 
 
 def get_single_metal(id):
-    # Variable to hold the found metal, if it exists
-    requested_metal = None
-    # Iterate the METALS list above. Very similar to the
-    # for..of loops you used in JavaScript.
-    for metal in METALS:
-        # Dictionaries in Python use [] notation to find a key
-        # instead of the dot notation that JavaScript used.
-        if metal["id"] == id:
-            requested_metal = metal
-    return requested_metal
+    with sqlite3.connect("./kneeldiamonds.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+        # Use a ? parameter to inject a variable's value
+        # into the SQL statement.
+        db_cursor.execute("""
+        SELECT
+            m.id,
+            m.metal,
+            m.price
+        FROM Metals m
+        WHERE m.id = ?
+        """, (id, ))
+        # Load the single result into memory
+        data = db_cursor.fetchone()
+        # Create an order instance from the current row
+        metal = Metal(data['id'], data['metal'],
+                          data['price'])
+
+        return metal.__dict__
 
 
 def update_metal(id, new_metal):
