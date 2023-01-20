@@ -22,6 +22,7 @@ CREATE TABLE `Orders`
     FOREIGN KEY(`style_id`) REFERENCES `Style`(`id`),
 	FOREIGN KEY(`metal_id`) REFERENCES `Metal`(`id`),
 	FOREIGN KEY(`size_id`) REFERENCES `Size`(`id`)
+    
 ); 
 
 DROP TABLE Orders
@@ -46,3 +47,14 @@ INSERT INTO `Styles` VALUES(null, 'Vintage', 965);
 INSERT INTO `Orders` VALUES(null, 1, 2, 3); 
 INSERT INTO `Orders` VALUES(null, 3,2,1); 
 INSERT INTO `Orders` VALUES(null, 2,2,2); 
+
+SELECT
+            o.id,
+            o.metal_id,
+            o.style_id,
+            o.size_id, 
+            m.metal metal_metal, 
+            m.price metal_price
+        FROM Orders o
+        JOIN Metals m 
+            ON m.id = o.metal_id
