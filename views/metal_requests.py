@@ -1,3 +1,6 @@
+import sqlite3
+import json
+
 METALS = [
     {
         "id": 1,
@@ -31,6 +34,8 @@ def get_all_metals():
     return METALS
 
 # Function with a single parameter
+
+
 def get_single_metal(id):
     # Variable to hold the found metal, if it exists
     requested_metal = None
@@ -42,3 +47,12 @@ def get_single_metal(id):
         if metal["id"] == id:
             requested_metal = metal
     return requested_metal
+
+
+def update_metal(id):
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        db_cursor = conn.cursor()
+        db_cursor.execute("""
+        UPDATE FROM metals
+        WHERE id = ?
+        """, (id, ))

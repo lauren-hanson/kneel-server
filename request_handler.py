@@ -1,12 +1,11 @@
+from urllib.parse import urlparse, parse_qs
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import *
 
-
 class HandleRequests(BaseHTTPRequestHandler):
     """Controls the functionality of any GET, PUT, POST, DELETE requests to the server
     """
-
     def parse_url(self, path):
         # Just like splitting a string in JavaScript. If the
         # path is "/animals/1", the resulting list will
@@ -25,6 +24,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         except ValueError:
             pass  # Request had trailing slash: /animals/
         return (resource, id)  # This is a tuple
+
     # function will return entire list
     # def do_GET(self):
     #     """Handles GET requests to the server """
@@ -47,52 +47,43 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     #     self.wfile.write(json.dumps(response).encode())
 
+    
     def do_GET(self):
         """Handles GET requests to the server """
         response = {}  # Default response
-
         # Parse the URL and capture the tuple that is returned
         (resource, id) = self.parse_url(self.path)
-
         if resource == "metals":
             if id is not None:
                 response = get_single_metal(id)
                 # self._set_headers(200)
-
                 if response is None:
                     self._set_headers(404)
                     response = "This metal is not in stock"
                 else:
                     self._set_headers(200)
-
             else:
                 self._set_headers(200)
                 response = get_all_metals()
-
         if resource == "orders":
             if id is not None:
                 self._set_headers(200)
                 response = get_single_order(id)
-
             else:
                 self._set_headers(200)
                 response = get_all_orders()
-
         if resource == "sizes":
             if id is not None:
                 # self._set_headers(200)
                 response = get_single_size(id)
-
                 if response is None:
                     self._set_headers(404)
                     response = "This size is not in stock"
                 else:
                     self._set_headers(200)
-
             else:
                 self._set_headers(200)
                 response = get_all_sizes()
-
         if resource == "styles":
             if id is not None:
                 # self._set_headers(200)
@@ -102,11 +93,9 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = "This style is not in stock"
                 else:
                     self._set_headers(200)
-
             else:
                 self._set_headers(200)
                 response = get_all_styles()
-
         self.wfile.write(json.dumps(response).encode())
 
     # def do_POST(self):
@@ -122,31 +111,25 @@ class HandleRequests(BaseHTTPRequestHandler):
         self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
-
         # Convert JSON string to a Python dictionary
         post_body = json.loads(post_body)
-
         # Parse the URL
         (resource, id) = self.parse_url(self.path)
-
         # Initialize new response
         new_order = None
         # new_location = None
         # new_employee = None
-
         # Add a new order to the list. Don't worry about
         # the orange squiggle, you'll define the create_order
         # function next.
         if resource == "orders":
             new_order = create_order(post_body)
-
         # Encode the new order and send in order
         self.wfile.write(json.dumps(new_order).encode())
 
     def do_DELETE(self):
         # Parse the URL
         (resource, id) = self.parse_url(self.path)
-
         # Delete a single order from the list
         if resource == "orders":
             # Set a 204 response code
