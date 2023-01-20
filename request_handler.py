@@ -3,9 +3,11 @@ import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import *
 
+
 class HandleRequests(BaseHTTPRequestHandler):
     """Controls the functionality of any GET, PUT, POST, DELETE requests to the server
     """
+
     def parse_url(self, path):
         path_params = path.split("/")
         resource = path_params[1]
@@ -15,9 +17,9 @@ class HandleRequests(BaseHTTPRequestHandler):
         except IndexError:
             pass  # No route parameter exists: /animals
         except ValueError:
-            pass  
-        return (resource, id)  
-  
+            pass
+        return (resource, id)
+
     def do_GET(self):
         """Handles GET requests to the server """
         response = {}  # Default response
@@ -100,12 +102,11 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Encode the new order and send in response
         self.wfile.write("".encode())
 
-    def do_PUT(self):
-        """Handles PUT requests to the server """
-        self.do_POST()
+    # def do_PUT(self):
+    #     """Handles PUT requests to the server """
+    #     self.do_POST()
 
     def do_PUT(self):
-        self._set_headers(204)
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
         post_body = json.loads(post_body)
@@ -113,11 +114,17 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Parse the URL
         (resource, id) = self.parse_url(self.path)
 
-        # Delete a single animal from the list
-        if resource == "orders":
-            update_order(id, post_body)
+        success = False
 
-    # Encode the new animal and send in response
+        if resource == "metals":
+            success = update_metal(id, post_body)
+    # rest of the elif's
+
+        if success:
+            self._set_headers(204)
+        else:
+            self._set_headers(404)
+
         self.wfile.write("".encode())
 
     def _set_headers(self, status):
